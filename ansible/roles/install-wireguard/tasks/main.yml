@@ -1,0 +1,32 @@
+---
+# - name: Pull the weejewel/wg-easy image
+#   docker_image:
+#     name: weejewel/wg-easy
+#     state: present
+
+- name: Run the wg-easy Docker container
+  docker_container:
+    name: wg-easy
+    image: ghcr.io/wg-easy/wg-easy
+    detach: yes
+    restart_policy: unless-stopped
+    ports:
+      - "28765:51820/udp"
+      # - "51821:51821/tcp"
+    env:
+      WG_HOST: "{{ hostvars[inventory_hostname]['ansible_host'] }}"
+      PASSWORD: "{{ password }}"
+      WG_DEFAULT_DNS: "208.67.222.222,208.67.220.220"
+    volumes:
+      - "/root/wg-easy-config:/etc/wireguard" 
+    capabilities:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      net.ipv4.conf.all.src_valid_mark: "1"
+      net.ipv4.ip_forward: "1"
+
+
+
+
+

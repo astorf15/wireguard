@@ -1,0 +1,80 @@
+---
+- name: Upgrade all packages
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+  when: ansible_os_family == "RedHat"
+
+- name: Install packages DNF
+  ansible.builtin.dnf:
+    name: "{{item}}"
+    state: latest
+    update_cache: true
+  with_items: 
+    - yum-utils
+    - net-tools
+    - nano
+    - mc
+    - iproute-tc
+    - vim
+    - git
+    - bash-completion
+    - nfs-utils
+    - python3.11
+    - iscsi-initiator-utils
+    # - rsyslog
+    - chrony
+    - jq
+    - ipvsadm
+  when: ansible_os_family == "RedHat"   
+
+- name: Update and upgrade apt packages
+  ansible.builtin.apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 #One day
+  when: ansible_os_family == "Debian"
+
+- name: Installing tools APT
+  ansible.builtin.apt: 
+    name: "{{item}}"
+    state: latest
+    update_cache: true 
+  with_items:     
+    - chrony
+    - net-tools
+    - nano
+    - vim
+    - python3
+    - tcpdump
+    - wget
+    - openssl
+    - curl
+    - mc
+    - git
+    - apt-transport-https
+    - jq
+    - iptables-persistent 
+    - ipvsadm
+  when: ansible_os_family == "Debian"   
+
+- name: Installing tools APK
+  community.general.apk: 
+    name: "{{item}}"
+    state: latest
+    update_cache: true 
+  with_items: 
+    - chrony
+    - net-tools
+    - nano
+    - vim
+    - python3
+    - tcpdump
+    - wget
+    - openssl
+    - curl
+    - mc
+    - git
+    - jq
+    # - iptables-persistent 
+  when: ansible_os_family == "Alpine"     

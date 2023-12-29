@@ -1,0 +1,31 @@
+---
+- name: Host configuring
+  hosts: all
+  become: true
+  remote_user: root
+  roles:
+    - install-tools
+    - new-useradd
+    - set-hostname
+    - install-docker
+    - configure-ssh
+  tags:
+    - host-configuring
+
+- name: run wireguard
+  hosts: all
+  become: true
+  remote_user: root
+  roles:
+    - install-wireguard
+  tags:
+    - run-wireguard
+
+- name: Iptables Rules
+  hosts: all
+  become: true
+  remote_user: root
+  roles:
+    - iptables-rules
+  tags:
+    - iptables-rules
